@@ -4,6 +4,8 @@ import random
 import re
 import sys
 import os
+os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
+os.environ['HF_HOME'] = '/root/autodl-tmp/cache/'
 import torch
 import warnings
 from transformers import AutoTokenizer, pipeline, AutoModelForCausalLM
@@ -52,7 +54,7 @@ def generate_prompt(n_garbage, depth_ratio):
         "\n".join([task_description, garbage_prefix, information_line]),
     )
 
-
+@torch.no_grad()
 def test_model(pipe, prompt_text, pass_key):
     # response = pipe(prompt_text, num_return_sequences=1, max_new_tokens=10)[
     #     0]["generated_text"][len(prompt_text):]

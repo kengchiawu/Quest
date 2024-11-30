@@ -1,7 +1,9 @@
 cd evaluation/passkey
 
-MODEL=Llama-3.1-8B-Instruct
-MODELPATH=meta-llama/Llama-3.1-8B-Instruct
+MODEL=Llama-3.2-1B-Instruct
+#Llama-3.1-8B-Instruct
+MODELPATH=meta-llama/Llama-3.2-1B-Instruct
+#meta-llama/Llama-3.1-8B-Instruct
 OUTPUT_DIR=results/$MODEL
 
 mkdir -p $OUTPUT_DIR
