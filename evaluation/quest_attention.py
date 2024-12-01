@@ -147,7 +147,11 @@ def forward(
     max_key = key_states * sign
     postive_query = query_states * sign
 
-    # expend max_key to be divisible by chunk_size
+    ####################################################################################
+    ####################################################################################
+    ################### expend max_key to be divisible by chunk_size ###################
+    ####################################################################################
+    ####################################################################################
     seq_length = max_key.shape[-2]
     padding_length = self.chunk_size - ((seq_length - 1) % self.chunk_size + 1)
     max_key = torch.cat(
@@ -157,7 +161,7 @@ def forward(
                 (max_key.shape[0], max_key.shape[1], padding_length, max_key.shape[3]),
                 device=max_key.device,
             )
-            * torch.tensor(torch.finfo(max_key.dtype).min),
+            * torch.tensor(torch.finfo(max_key.dtype).min),#极小值
         ],
         dim=-2,
     )
@@ -169,7 +173,7 @@ def forward(
         max_key.shape[2] // self.chunk_size,
         self.chunk_size,
         max_key.shape[3],
-    ).amax(dim=-2)
+    ).amax(dim=-2)#极大值
 
     # duplicate chunk_max_key chunk_size times
     chunk_max_key = chunk_max_key.unsqueeze(-2).repeat(1, 1, 1, self.chunk_size, 1)

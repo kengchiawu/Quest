@@ -185,7 +185,7 @@ def main(args):
             from evaluation.quest_attention import (
                 enable_quest_attention_eval,
             )
-
+            #替换attention层的forward函数，主要是KV Reshape为chunk_size的倍数,然后追加极小值和极大值
             enable_quest_attention_eval(loaded, args)
 
         pipe = pipeline(
