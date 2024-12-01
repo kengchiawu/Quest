@@ -143,7 +143,7 @@ def forward(
         self.head_dim
     )
 
-    sign = (query_states > 0) + (~(query_states > 0)) * -1
+    sign = (query_states > 0) + (~(query_states > 0)) * -1  #sign是与query_states形状相同的向量, sign.item = 1 if positive, -1 if negative
     max_key = key_states * sign
     postive_query = query_states * sign
 
