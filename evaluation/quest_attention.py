@@ -157,7 +157,7 @@ def forward(
     max_key = torch.cat(
         [
             max_key,
-            torch.zeros(
+            torch.ones(
                 (max_key.shape[0], max_key.shape[1], padding_length, max_key.shape[3]),
                 device=max_key.device,
             )
@@ -173,7 +173,7 @@ def forward(
         max_key.shape[2] // self.chunk_size,
         self.chunk_size,
         max_key.shape[3],
-    ).mean(dim=-2)#极大值
+    ).amax(dim=-2)#极大值
 
     # duplicate chunk_max_key chunk_size times
     chunk_max_key = chunk_max_key.unsqueeze(-2).repeat(1, 1, 1, self.chunk_size, 1)
