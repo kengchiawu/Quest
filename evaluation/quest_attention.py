@@ -161,7 +161,7 @@ def forward(
                 (max_key.shape[0], max_key.shape[1], padding_length, max_key.shape[3]),
                 device=max_key.device,
             )
-            * torch.tensor(torch.finfo(max_key.dtype).min),#极小值
+            * torch.tensor(torch.finfo(max_key.dtype).min),#极小值=0
         ],
         dim=-2,
     )
@@ -173,7 +173,7 @@ def forward(
         max_key.shape[2] // self.chunk_size,
         self.chunk_size,
         max_key.shape[3],
-    ).mean(dim=-2)#极大值
+    ).mean(dim=-2)#average feature in each chunk
 
     # duplicate chunk_max_key chunk_size times
     chunk_max_key = chunk_max_key.unsqueeze(-2).repeat(1, 1, 1, self.chunk_size, 1)
