@@ -53,7 +53,7 @@ def local_heavy_hitter_mask(attn_weights, token_budget, chunk_size):
     ).amax(dim=-1)
 
     _, topk = chunk_attn_weights.topk(
-        k=min(max(3, token_budget // chunk_size), chunk_attn_weights.size(-1)), dim=-1
+        k=min(layer_cache_size, chunk_attn_weights.size(-1)), dim=-1
     )
     # repeat topk chunk_size times and recover the original indexes (* chunk_size + arange(chunk_size))
     topk = topk.unsqueeze(-1).repeat(
@@ -246,9 +246,10 @@ def forward(
 
 global layer_id
 layer_id = 32
-
+global layer_cache_size
 
 def enable_quest_attention_eval(model, args):
+    cache_list = np.linespace(start=16*args.token_budget//args.chunk_size,stop=args.token_budget//args.chunk_size//8, num=30, dtype=int)
     for name, module in reversed(model._modules.items()):
         if len(list(module.children())) > 0:
             enable_quest_attention_eval(
@@ -257,9 +258,11 @@ def enable_quest_attention_eval(model, args):
             )
 
         global layer_id
+        global layer_cache_size
         if isinstance(module, (LlamaAttention, MistralAttention)):
             # For longchat model
             layer_id -= 1
+            layer_cache_size = cache_list[layer_id-2]
             model._modules[name].layer_id = layer_id
             model._modules[name].flash_forward = model._modules[name].forward
             model._modules[name].forward = types.MethodType(
