@@ -1,6 +1,6 @@
 import os
 os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
-os.environ['HF_HOME'] = '/root/autodl-tmp/cache/'
+#os.environ['HF_HOME'] = '/root/autodl-tmp/cache/'
 from huggingface_hub import login
 import torch
 login()
