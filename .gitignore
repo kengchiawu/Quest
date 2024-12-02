@@ -177,9 +177,9 @@ outputs/
 
 *.ipynb
 
-evaluation/LongBench/pred
-evaluation/LongBench/pred_e
-evaluation/passkey/results
-evaluation/pg19/results
+#evaluation/LongBench/pred
+#evaluation/LongBench/pred_e
+#evaluation/passkey/results
+#evaluation/pg19/results
 
 *.egg-info/
