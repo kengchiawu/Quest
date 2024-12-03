@@ -250,7 +250,7 @@ layer_id = 16
 global layer_cache_size
 
 def enable_quest_attention_eval(model, args):
-    cache_list = np.linespace(start=2*args.token_budget//args.chunk_size,stop=args.token_budget//args.chunk_size//8, num=14, dtype=int)
+    cache_list = np.linspace(start=2*args.token_budget//args.chunk_size,stop=args.token_budget//args.chunk_size//8, num=14, dtype=int)
     for name, module in reversed(model._modules.items()):
         if len(list(module.children())) > 0:
             enable_quest_attention_eval(
