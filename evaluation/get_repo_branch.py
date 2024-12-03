@@ -1,6 +1,8 @@
 from git import Repo
 import os
 import requests
+import argparse
+from argparse import ArgumentParser
 
 def get_repo_info(repo_path='~/quest'):
     try:
@@ -27,8 +29,7 @@ def get_repo_info(repo_path='~/quest'):
         return None, None
 
 # 调用函数并打印结果
-def send_message():
-    repo_name, current_branch = get_repo_info()
+def send_message(repo_name, current_branch):
     headers = {"Authorization": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjUyNTAwMiwidXVpZCI6IjE5YzhiMWY0LWM2ZDQtNGRmZC04NmExLWZjMTEzNzcyMjIxMCIsImlzX2FkbWluIjpmYWxzZSwiYmFja3N0YWdlX3JvbGUiOiIiLCJpc19zdXBlcl9hZG1pbiI6ZmFsc2UsInN1Yl9uYW1lIjoiIiwidGVuYW50IjoiYXV0b2RsIiwidXBrIjoiIn0.VFeaZd23xdnopLR0cOLdPsUpTKT4fZh3ltTzsjNOPa1Xy-94ekt1wv7ucqCzM_Ka8SZ62O-nuQPEcDmB71oyNw"}
     resp = requests.post("https://www.autodl.com/api/v1/wechat/message/send",
                          json={
@@ -38,4 +39,8 @@ def send_message():
     print(resp.content.decode())
 
 if __name__ == "__main__":
-    send_message()
+    repo_name, current_branch = get_repo_info()
+    #warnings.simplefilter("ignore")
+    #parser = argparse.ArgumentParser()
+    #parser.add_argument("--dynamic-ntk", type=float)
+    send_message(repo_name, current_branch)

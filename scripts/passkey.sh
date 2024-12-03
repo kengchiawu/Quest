@@ -10,10 +10,14 @@ mkdir -p $OUTPUT_DIR
 
 length=100000
 
-for token_budget in 512 1024 2048 4096
+for token_budget in 256 512 
 do
     python passkey.py -m $MODELPATH \
         --iterations 100 --fixed-length $length \
         --quest --token_budget $token_budget --chunk_size 16 \
         --output-file $OUTPUT_DIR/$MODEL-quest-$token_budget.jsonl
 done
+
+
+cd ..
+python get_repo_branch.py
