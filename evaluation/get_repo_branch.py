@@ -29,7 +29,7 @@ def get_repo_info(repo_path='~/quest'):
         return None, None
 
 # 调用函数并打印结果
-def send_message(repo_name, current_branch):
+def send_message(repo_name, current_branch,args):
     headers = {"Authorization": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjUyNTAwMiwidXVpZCI6IjE5YzhiMWY0LWM2ZDQtNGRmZC04NmExLWZjMTEzNzcyMjIxMCIsImlzX2FkbWluIjpmYWxzZSwiYmFja3N0YWdlX3JvbGUiOiIiLCJpc19zdXBlcl9hZG1pbiI6ZmFsc2UsInN1Yl9uYW1lIjoiIiwidGVuYW50IjoiYXV0b2RsIiwidXBrIjoiIn0.VFeaZd23xdnopLR0cOLdPsUpTKT4fZh3ltTzsjNOPa1Xy-94ekt1wv7ucqCzM_Ka8SZ62O-nuQPEcDmB71oyNw"}
     resp = requests.post("https://www.autodl.com/api/v1/wechat/message/send",
                          json={
