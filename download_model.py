@@ -6,7 +6,7 @@ import torch
 login()
 from transformers import AutoModelForCausalLM, AutoTokenizer
 device = "cuda" # the device to load the model onto
-model_name_or_path = "meta-llama/Llama-3.2-1B-Instruct"#"meta-llama/Llama-3.1-8B-Instruct"
+model_name_or_path = "/dataset/model/longchat/longchat-7b-v1.5-32k"#"meta-llama/Llama-3.1-8B-Instruct"
 model = AutoModelForCausalLM.from_pretrained(
     model_name_or_path,
     torch_dtype="auto",
