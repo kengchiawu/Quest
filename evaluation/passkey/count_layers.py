@@ -25,7 +25,7 @@ def enable_quest_attention_layer_count(model,args):
         if len(list(module.children())) > 0:
             enable_quest_attention_layer_count(module,args)
         if isinstance(module,LlamaAttention):
-           print( model._modules[name].layer_id)
+           print( model._modules[name].layer_idx)
 
 def main(args):
     os.environ["TOKENIZERS_PARALLELISM"] = "true"

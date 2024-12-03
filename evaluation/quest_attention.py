@@ -245,7 +245,9 @@ def forward(
 
 
 global layer_id
-layer_id = 32
+layer_id = 16
+#Llama-3.2-1B-Instruct has 16 layers
+#Llama-3.1-8B-Instruct has 32 layers
 
 
 def enable_quest_attention_eval(model, args):
