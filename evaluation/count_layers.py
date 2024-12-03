@@ -17,14 +17,14 @@ from evaluation.mistral import enable_tuple_kv_cache_for_mistral
 
 from transformers.models.llama.modeling_llama import (
     LlamaAttention,
-    
 )
+from transformers.models.mistral.modeling_mistral import MistralAttention
 
 def enable_quest_attention_layer_count(model,args):
     for name,module in reversed(model._modules.items()):
         if len(list(module.children())) > 0:
             enable_quest_attention_layer_count(module,args)
-        if isinstance(module,LlamaAttention):
+        if isinstance(module, (LlamaAttention, MistralAttention)):
            print( model._modules[name].layer_idx)
 
 def main(args):
@@ -40,9 +40,8 @@ def main(args):
         trust_remote_code=True,
         low_cpu_mem_usage=True,
     )
-    if args.quest:
-        print("Enabling Quest Attention")
-        enable_quest_attention_layer_count(loaded,args)
+    print("Enabling Quest Attention")
+    enable_quest_attention_layer_count(loaded,args)
 
 def add_args(parser: ArgumentParser):
     parser.add_argument("--dynamic-linear", action="store_true")
@@ -73,7 +72,7 @@ def add_args(parser: ArgumentParser):
 if __name__ == "__main__":
     warnings.simplefilter("ignore")
     parser = argparse.ArgumentParser()
-    parser.add_argument("-m", "--model",type=str, default="meta-llama/Llama-3.2-1B-Instruct")
+    parser.add_argument("-m", "--model",type=str, default="lmsys/longchat-7b-v1.5-32k")
     parser.add_argument("--fixed-length", type=int)
     parser.add_argument("--max-tokens", type=int, default=8192)
     parser.add_argument("--min-tokens", type=int, default=256)
