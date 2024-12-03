@@ -245,11 +245,12 @@ def forward(
 
 
 global layer_id
-layer_id = 32
+layer_id = 16
+#Llama-3.2-1B-Instruct has 16layers
 global layer_cache_size
 
 def enable_quest_attention_eval(model, args):
-    cache_list = np.linespace(start=16*args.token_budget//args.chunk_size,stop=args.token_budget//args.chunk_size//8, num=30, dtype=int)
+    cache_list = np.linespace(start=2*args.token_budget//args.chunk_size,stop=args.token_budget//args.chunk_size//8, num=14, dtype=int)
     for name, module in reversed(model._modules.items()):
         if len(list(module.children())) > 0:
             enable_quest_attention_eval(
