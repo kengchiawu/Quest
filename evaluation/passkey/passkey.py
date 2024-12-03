@@ -6,6 +6,7 @@ import sys
 import os
 os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
 os.environ['HF_HOME'] = '/root/autodl-tmp/cache/'
+os.environ['CUDA_VISIBLE_DEVICES'] = '0,1'
 import torch
 import warnings
 from transformers import AutoTokenizer, pipeline, AutoModelForCausalLM

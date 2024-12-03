@@ -29,7 +29,7 @@ def local_heavy_hitter_mask(attn_weights, token_budget, chunk_size):
     attn_weights = torch.cat(
         [
             attn_weights,
-            torch.ones(
+            torch.zeros(
                 (
                     attn_weights.shape[0],
                     attn_weights.shape[1],
