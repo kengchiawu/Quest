@@ -50,7 +50,7 @@ def local_heavy_hitter_mask(attn_weights, token_budget, chunk_size):
         attn_weights.shape[2],
         attn_weights.shape[3] // chunk_size,
         chunk_size,
-    ).mean(dim=-1)
+    ).amax(dim=-1)
     # get the topk chunk_size tokens
     _, topk = chunk_attn_weights.topk(
         k=min(max(3, token_budget // chunk_size), chunk_attn_weights.size(-1)), dim=-1
