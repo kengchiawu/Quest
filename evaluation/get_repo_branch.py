@@ -35,12 +35,14 @@ def send_message(repo_name, current_branch):
                          json={
                              "title": "仿真完成",
                              "name": f"{repo_name}.{current_branch}",
+                             "content": f"{args.model_path}",
                          }, headers = headers)
     print(resp.content.decode())
 
 if __name__ == "__main__":
     repo_name, current_branch = get_repo_info()
-    #warnings.simplefilter("ignore")
-    #parser = argparse.ArgumentParser()
-    #parser.add_argument("--dynamic-ntk", type=float)
-    send_message(repo_name, current_branch)
+    warnings.simplefilter("ignore")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--model_path", type=str)
+    args = parser.parse_args()
+    send_message(repo_name, current_branch,args)

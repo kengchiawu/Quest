@@ -20,4 +20,4 @@ done
 
 
 cd ..
-python get_repo_branch.py
+python get_repo_branch.py --model_path $MODELPATH
