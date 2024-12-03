@@ -1,5 +1,6 @@
 from git import Repo
 import os
+import requests
 
 def get_repo_info(repo_path='~/quest'):
     try:
@@ -26,7 +27,15 @@ def get_repo_info(repo_path='~/quest'):
         return None, None
 
 # 调用函数并打印结果
-repo_name, current_branch = get_repo_info()
-if repo_name and current_branch:
-    print(f"Repository name is: {repo_name}")
-    print(f"Current branch is: {current_branch}")
+def send_message():
+    repo_name, current_branch = get_repo_info()
+    headers = {"Authorization": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjUyNTAwMiwidXVpZCI6IjE5YzhiMWY0LWM2ZDQtNGRmZC04NmExLWZjMTEzNzcyMjIxMCIsImlzX2FkbWluIjpmYWxzZSwiYmFja3N0YWdlX3JvbGUiOiIiLCJpc19zdXBlcl9hZG1pbiI6ZmFsc2UsInN1Yl9uYW1lIjoiIiwidGVuYW50IjoiYXV0b2RsIiwidXBrIjoiIn0.VFeaZd23xdnopLR0cOLdPsUpTKT4fZh3ltTzsjNOPa1Xy-94ekt1wv7ucqCzM_Ka8SZ62O-nuQPEcDmB71oyNw"}
+    resp = requests.post("https://www.autodl.com/api/v1/wechat/message/send",
+                         json={
+                             "title": "仿真完成",
+                             "name": f"{repo_name}.{current_branch}",
+                         }, headers = headers)
+    print(resp.content.decode())
+
+if __name__ == "__main__":
+    send_message()
