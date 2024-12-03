@@ -157,7 +157,7 @@ def forward(
     max_key = torch.cat(
         [
             max_key,
-            torch.zeros(
+            torch.ones(
                 (max_key.shape[0], max_key.shape[1], padding_length, max_key.shape[3]),
                 device=max_key.device,
             )
