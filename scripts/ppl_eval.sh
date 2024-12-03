@@ -1,7 +1,7 @@
 cd evaluation/pg19
 
 MODELPATH=/dataset/model/longchat/longchat-7b-v1.5-32k
-OUTPUT_DIR=results/ppl_eval/longchat
+OUTPUT_DIR=results/ppl_eval/longchat/mean
 mkdir -p $OUTPUT_DIR
 
 device=0
