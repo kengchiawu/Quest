@@ -53,7 +53,7 @@ def local_heavy_hitter_mask(attn_weights, token_budget, chunk_size):
     ).amax(dim=-1)
 
     _, topk = chunk_attn_weights.topk(
-        k=min(layer_cache_size, chunk_attn_weights.size(-1)), dim=-1
+        k=min(max(3,token_budget//chunk_size), chunk_attn_weights.size(-1)), dim=-1
     )
     # repeat topk chunk_size times and recover the original indexes (* chunk_size + arange(chunk_size))
     topk = topk.unsqueeze(-1).repeat(
