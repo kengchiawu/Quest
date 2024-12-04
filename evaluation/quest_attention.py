@@ -268,7 +268,7 @@ def enable_quest_attention_eval(model, args):
             # For longchat model
             global idx_offset
             idx_offset += 1
-            model._modules[name].layer_id = layer_id - idx_offset
+            model._modules[name].layer_id = model._modules[name].layer_idx
             model._modules[name].flash_forward = model._modules[name].forward
             model._modules[name].forward = types.MethodType(
                 forward, model._modules[name]
