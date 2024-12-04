@@ -179,7 +179,7 @@ outputs/
 
 #evaluation/LongBench/pred
 #evaluation/LongBench/pred_e
-#evaluation/passkey/results
-#evaluation/pg19/results
+evaluation/passkey/results
+evaluation/pg19/results
 
 *.egg-info/

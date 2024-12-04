@@ -14,7 +14,7 @@ from argparse import ArgumentParser
 device = "cuda"
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-m", "--model",type=str)
+parser.add_argument("-m", "--model", action="append", nargs="+")
 parser.add_argument("--model_name_or_path", type=str)
 parser.add_argument("--fixed-length", type=int)
 parser.add_argument("--max-tokens", type=int, default=8192)
