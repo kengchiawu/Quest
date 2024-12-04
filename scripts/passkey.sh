@@ -1,11 +1,11 @@
 cd evaluation/passkey
 
-MODEL=Yarn-Llama-2-7b-128k
+MODEL=Llama-3.1-8B-Instruct
 #Llama-3.2-1B-Instruct
-#Llama-3.1-8B-Instruct
-MODELPATH=NousResearch/Yarn-Llama-2-7b-128k
+#Yarn-Llama-2-7b-128k
+MODELPATH=meta-llama/Llama-3.1-8B-Instruct
 #meta-llama/Llama-3.2-1B-Instruct
-#meta-llama/Llama-3.1-8B-Instruct
+#NousResearch/Yarn-Llama-2-7b-128k
 OUTPUT_DIR=results/$MODEL/mean
 
 mkdir -p $OUTPUT_DIR
