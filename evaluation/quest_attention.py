@@ -244,10 +244,10 @@ def forward(
     return attn_output, attn_weights, past_key_value
 
 
-global layer_id
-layer_id = 32
-global idx_offset
-idx_offset = 0
+#global layer_id
+#layer_id = 32
+#global idx_offset
+#idx_offset = 0
 #Llama-3.2-1B-Instruct has 16 layers
 #Llama-3.1-8B-Instruct has 32 layers
 #longchat-7b-v1.5-32k has 32 layers
@@ -260,14 +260,14 @@ def enable_quest_attention_eval(model, args):
                 args,
             )
             
-        global layer_id
-        if "1b-instruct" in args.model[0][0].lower():
-            layer_id = 16
+        #global layer_id
+        #if "1b-instruct" in args.model[0][0].lower():
+            #layer_id = 16
         
         if isinstance(module, (LlamaAttention, MistralAttention)):
             # For longchat model
-            global idx_offset
-            idx_offset += 1
+            #global idx_offset
+            #idx_offset += 1
             model._modules[name].layer_id = model._modules[name].layer_idx
             model._modules[name].flash_forward = model._modules[name].forward
             model._modules[name].forward = types.MethodType(
