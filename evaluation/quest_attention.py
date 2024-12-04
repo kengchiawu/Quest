@@ -261,7 +261,7 @@ def enable_quest_attention_eval(model, args):
             )
             
         global layer_id
-        if "1b-instruct" in args.model.lower():
+        if "1b-instruct" in args.model[0][0].lower():
             layer_id = 16
         
         if isinstance(module, (LlamaAttention, MistralAttention)):
