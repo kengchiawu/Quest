@@ -244,12 +244,10 @@ def forward(
     return attn_output, attn_weights, past_key_value
 
 
-global layer_id
-layer_id = 32
-global layer_cache_size
+#global layer_id
+#layer_id = 32
 
 def enable_quest_attention_eval(model, args):
-    cache_list = np.linespace(start=16*args.token_budget//args.chunk_size,stop=args.token_budget//args.chunk_size//8, num=30, dtype=int)
     for name, module in reversed(model._modules.items()):
         if len(list(module.children())) > 0:
             enable_quest_attention_eval(
@@ -257,13 +255,11 @@ def enable_quest_attention_eval(model, args):
                 args,
             )
 
-        global layer_id
-        global layer_cache_size
+        #global layer_id
         if isinstance(module, (LlamaAttention, MistralAttention)):
             # For longchat model
-            layer_id -= 1
-            layer_cache_size = cache_list[layer_id-2]
-            model._modules[name].layer_id = layer_id
+            #idx_offset += 1
+            model._modules[name].layer_id = model._modules[name].layer_idx
             model._modules[name].flash_forward = model._modules[name].forward
             model._modules[name].forward = types.MethodType(
                 forward, model._modules[name]
