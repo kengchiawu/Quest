@@ -8,7 +8,7 @@ device=0
 budget=4096
 
 CUDA_VISIBLE_DEVICES=1 python -u ppl_eval.py \
-    -m $MODELPATH
+    -m $MODELPATH \
     --model_name_or_path $MODELPATH \
     --output_dir $OUTPUT_DIR \
     --num_eval_tokens 30000 \
