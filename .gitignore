@@ -174,7 +174,7 @@ __pycache__
 results/
 datasets/
 outputs/
-
+scripts/
 *.ipynb
 
 #evaluation/LongBench/pred
