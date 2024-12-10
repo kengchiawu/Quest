@@ -2,8 +2,8 @@ import torch
 from tqdm import tqdm
 import os
 os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
-os.environ['HF_HOME'] = '/root/autodl-tmp/cache/'
-os.environ['CUDA_VISIBLE_DEVICES'] = '0,1,2'
+#os.environ['HF_HOME'] = '/root/autodl-tmp/cache/'
+os.environ['CUDA_VISIBLE_DEVICES'] = '3,4'
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from datasets import load_dataset
 from torch.nn import CrossEntropyLoss
@@ -25,7 +25,7 @@ parser.add_argument("--iterations", type=int, default=20)
 parser.add_argument("--output_dir", type=str)
 
 parser.add_argument("--num_eval_tokens", type=int, default=None)
-
+parser.add_argument('--enable_h20', action='store_true',help="Enable heavy-hitter attention")
 parser.add_argument("--quest", action="store_true", help="Enable quest attention")
 parser.add_argument("--token_budget", type=int, default=1024)
 parser.add_argument("--chunk_size", type=int, default=16)

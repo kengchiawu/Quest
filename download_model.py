@@ -1,12 +1,12 @@
 import os
 os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
-os.environ['HF_HOME'] = '/root/autodl-tmp/cache/'
+#os.environ['HF_HOME'] = '/root/autodl-tmp/cache/'
 from huggingface_hub import login
 import torch
 login()
 from transformers import AutoModelForCausalLM, AutoTokenizer
 device = "cuda" # the device to load the model onto
-model_name_or_path = "lmsys/longchat-7b-v1.5-32k"#"meta-llama/Llama-3.1-8B-Instruct"
+model_name_or_path = "meta-llama/Llama-3.2-1B-Instruct"#"lmsys/longchat-7b-v1.5-32k"
 model = AutoModelForCausalLM.from_pretrained(
     model_name_or_path,
     torch_dtype="auto",
