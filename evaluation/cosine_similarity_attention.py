@@ -20,14 +20,14 @@ from transformers.cache_utils import DynamicCache
 
 from transformers.models.mistral.modeling_mistral import MistralAttention
 
-def compute_head_cosine_similarity(attn_weights, output_file, layer_id):
+def compute_head_cosine_similarity(attn_weights, output_dir, layer_id):
     bsz, num_heads, q_len, kv_seq_len = attn_weights.size()
     
     # 选择特定位置的注意力权重，选择最后一列query
     attn_slice = attn_weights[:, :, -1, :]  # Shape: (bsz, num_heads, kv_seq_len)
     
     # 打开文件准备追加写入
-    with open(f"{args.output_dir}/cos_sim.txt", 'a') as f:
+    with open(f"{output_dir}/cos_sim.txt", 'a') as f:
         for i in range(bsz):
             head_i = attn_slice[i]  # Shape: (num_heads, kv_seq_len)
             
