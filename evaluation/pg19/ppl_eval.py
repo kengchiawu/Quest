@@ -71,6 +71,9 @@ if args.quest:
 
     enable_quest_attention_eval(model, args)
 
+else:
+    
+
 os.makedirs(args.output_dir, exist_ok=True)
 f = open(f"{args.output_dir}/log.txt", "w")
 
