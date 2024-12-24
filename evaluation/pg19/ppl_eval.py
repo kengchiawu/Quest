@@ -55,7 +55,7 @@ def load(model_name_or_path):
 
 args = parser.parse_args()
 print("loading dataset")
-data = load_dataset("emozilla/pg19-test", split="test",cache_dir='~/.cache/huggingface/datasets')
+data = load_dataset("emozilla/pg19-test", split="test",cache_dir='/homeB/youkangqi/.cache/huggingface/datasets/emozilla___pg19-test')
 print("loading model & tokenizer")
 model, tokenizer = load(args.model_name_or_path)
 
@@ -73,7 +73,7 @@ if args.quest:
 
 else:
     print("Enable cos_sim compute cross heads")
-    from evaluation.cosine_similarity_attention.py import(
+    from evaluation.cosine_similarity_attention import(
         enable_head_cos_sim_eval,
     )
 
