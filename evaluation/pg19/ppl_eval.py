@@ -54,9 +54,9 @@ def load(model_name_or_path):
 
 
 args = parser.parse_args()
-
+print("loading dataset")
 data = load_dataset("emozilla/pg19-test", split="test")
-
+print("loading model & tokenizer")
 model, tokenizer = load(args.model_name_or_path)
 
 nlls = []
