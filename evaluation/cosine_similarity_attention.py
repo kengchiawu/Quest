@@ -20,53 +20,29 @@ from transformers.cache_utils import DynamicCache
 
 from transformers.models.mistral.modeling_mistral import MistralAttention
 
-def local_heavy_hitter_mask(attn_weights, token_budget, chunk_size):
-    # attn_weights (BS, head, query, keys)
-
-    # expend attn_weights to be divisible by chunk_size
-    seq_length = attn_weights.shape[-1]
-    padding_length = chunk_size - ((seq_length - 1) % chunk_size + 1)
-    attn_weights = torch.cat(
-        [
-            attn_weights,
-            torch.ones(
-                (
-                    attn_weights.shape[0],
-                    attn_weights.shape[1],
-                    attn_weights.shape[2],
-                    padding_length,
-                ),
-                device=attn_weights.device,
-            )
-            * torch.tensor(torch.finfo(attn_weights.dtype).min),
-        ],
-        dim=-1,
-    )
-
-    # chunk attn_weights into chunk_size tokens
-    chunk_attn_weights = attn_weights.reshape(
-        attn_weights.shape[0],
-        attn_weights.shape[1],
-        attn_weights.shape[2],
-        attn_weights.shape[3] // chunk_size,
-        chunk_size,
-    ).amax(dim=-1)
-
-    _, topk = chunk_attn_weights.topk(
-        k=min(max(3,token_budget//chunk_size), chunk_attn_weights.size(-1)), dim=-1
-    )
-    # repeat topk chunk_size times and recover the original indexes (* chunk_size + arange(chunk_size))
-    topk = topk.unsqueeze(-1).repeat(
-        1, 1, 1, 1, chunk_size
-    ) * chunk_size + torch.arange(chunk_size, device=topk.device)
-    topk = topk.reshape(topk.shape[0], topk.shape[1], topk.shape[2], -1)
-    mask_bottom = torch.zeros_like(attn_weights, dtype=torch.bool)
-    mask_bottom.scatter_(-1, topk, True)
-
-    # remove the padding
-    mask_bottom = mask_bottom[:, :, :, :seq_length]
-
-    return mask_bottom
+def compute_head_cosine_similarity(attn_weights, output_file, layer_id):
+    bsz, num_heads, q_len, kv_seq_len = attn_weights.size()
+    
+    # 选择特定位置的注意力权重，选择最后一列query
+    attn_slice = attn_weights[:, :, -1, :]  # Shape: (bsz, num_heads, kv_seq_len)
+    
+    # 打开文件准备追加写入
+    with open(f"{args.output_dir}/cos_sim.txt", 'a') as f:
+        for i in range(bsz):
+            head_i = attn_slice[i]  # Shape: (num_heads, kv_seq_len)
+            
+            # 计算head之间的余弦相似度
+            cos_sim_matrix = torch.zeros((num_heads, num_heads))
+            for j in range(num_heads):
+                for k in range(j, num_heads):
+                    sim = F.cosine_similarity(head_i[j].unsqueeze(0), head_i[k].unsqueeze(0), dim=1)
+                    cos_sim_matrix[j, k] = sim
+                    if j != k:
+                        cos_sim_matrix[k, j] = sim  # 对称填充
+            
+            # 将相似度矩阵转换为字符串并写入文件
+            cos_sim_str = '\n'.join([','.join([f"{val:.6f}" for val in row]) for row in cos_sim_matrix.tolist()])
+            f.write(f"q_len:{q_len}\nLayer_id {layer_id}:\n{cos_sim_str}\n\n")
 
 
 def forward(
@@ -143,51 +119,6 @@ def forward(
         self.head_dim
     )
 
-    '''
-    sign = (query_states > 0) + (~(query_states > 0)) * -1  #sign是与query_states形状相同的向量, sign.item = 1 if positive, -1 if negative
-    max_key = key_states * sign
-    postive_query = query_states * sign
-
-    ####################################################################################
-    ####################################################################################
-    ################### expend max_key to be divisible by chunk_size ###################
-    ####################################################################################
-    ####################################################################################
-    seq_length = max_key.shape[-2]
-    padding_length = self.chunk_size - ((seq_length - 1) % self.chunk_size + 1)
-    max_key = torch.cat(
-        [
-            max_key,
-            torch.ones(
-                (max_key.shape[0], max_key.shape[1], padding_length, max_key.shape[3]),
-                device=max_key.device,
-            )
-            * torch.tensor(torch.finfo(max_key.dtype).min),#极小值
-        ],
-        dim=-2,
-    )
-
-    # chunk max_key into chunk_size tokens
-    chunk_max_key = max_key.reshape(
-        max_key.shape[0],
-        max_key.shape[1],
-        max_key.shape[2] // self.chunk_size,
-        self.chunk_size,
-        max_key.shape[3],
-    ).amax(dim=-2)#极大值
-
-    # duplicate chunk_max_key chunk_size times
-    chunk_max_key = chunk_max_key.unsqueeze(-2).repeat(1, 1, 1, self.chunk_size, 1)
-    # reshape chunk_max_key to the original shape
-    chunk_max_key = chunk_max_key.reshape(
-        chunk_max_key.shape[0], chunk_max_key.shape[1], -1, chunk_max_key.shape[-1]
-    )[:, :, :seq_length, :]
-
-    quantized_weight = torch.matmul(
-        postive_query.float(),
-        chunk_max_key.transpose(2, 3),
-    )
-    '''
     if attn_weights.size() != (bsz, self.num_heads, q_len, kv_seq_len):
         raise ValueError(
             f"Attention weights should be of size {(bsz, self.num_heads, q_len, kv_seq_len)}, but is"
@@ -217,6 +148,10 @@ def forward(
     attn_weights = nn.functional.softmax(attn_weights, dim=-1, dtype=torch.float32).to(
         query_states.dtype
     )
+    #attn_weights.size() = (bsz, self.num_heads, q_len, kv_seq_len)
+    (bsz_sim, _ , q_len_sim, kv_seq_len_sim) = attn_weights.size()
+    if q_len_sim % 500 == 499:
+        compute_head_cosine_similarity(attn_weights, self.output_dir, self.layer_id)
     attn_output = torch.matmul(attn_weights, value_states)
 
     if attn_output.size() != (bsz, self.num_heads, q_len, self.head_dim):
@@ -227,6 +162,7 @@ def forward(
 
     attn_output = attn_output.transpose(1, 2)
     #attn_output.size() = (bsz, q_len, self.num_heads, self.head_dim)
+
     attn_output = attn_output.reshape(bsz, q_len, self.hidden_size)
 
     attn_output = self.o_proj(attn_output)
@@ -240,7 +176,7 @@ def forward(
 #global layer_id
 #layer_id = 32
 
-def enable_quest_attention_eval(model, args):
+def enable_head_cos_sim_eval(model, args):
     for name, module in reversed(model._modules.items()):
         if len(list(module.children())) > 0:
             enable_quest_attention_eval(
@@ -258,5 +194,4 @@ def enable_quest_attention_eval(model, args):
                 forward, model._modules[name]
             )
 
-            model._modules[name].token_budget = args.token_budget
-            model._modules[name].chunk_size = args.chunk_size
+            model._modules[name].output_dir = args.output_dir

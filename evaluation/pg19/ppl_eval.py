@@ -72,7 +72,13 @@ if args.quest:
     enable_quest_attention_eval(model, args)
 
 else:
-    
+    print("Enable cos_sim compute cross heads")
+    from evaluation.cosine_similarity_attention.py import(
+        enable_head_cos_sim_eval,
+    )
+
+    enable_head_cos_sim_eval(model, args)
+
 
 os.makedirs(args.output_dir, exist_ok=True)
 f = open(f"{args.output_dir}/log.txt", "w")
@@ -104,7 +110,8 @@ for text in data["text"][:1]:
         pbar.set_description(
             f"nll: {neg_log_likelihood.item():.2f}, ppl: {torch.exp(neg_log_likelihood).item():.2f}"
         )
-        print(neg_log_likelihood.item(), file=f, flush=True)
+        if args.quest:
+            print(neg_log_likelihood.item(), file=f, flush=True)
         num_eval_tokens += 1
         if args.num_eval_tokens is not None and num_eval_tokens >= args.num_eval_tokens:
             break
@@ -115,5 +122,6 @@ f.close()
 
 ppl = torch.exp(torch.stack(nlls).mean())
 print(ppl.item())
-with open(f"{args.output_dir}/ppl.txt", "w") as f:
-    f.write(f"{ppl.item()}\n")
+if args.quest:
+    with open(f"{args.output_dir}/ppl.txt", "w") as f:
+        f.write(f"{ppl.item()}\n")
