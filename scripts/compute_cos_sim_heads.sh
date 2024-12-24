@@ -8,7 +8,7 @@ mkdir -p $OUTPUT_DIR
 #device=0
 budget=4096
 
-CUDA_VISIBLE_DEVICES=0,1,2 python -u ppl_eval.py \
+CUDA_VISIBLE_DEVICES=3,4,5 python -u ppl_eval.py \
     --model_name_or_path $MODELPATH \
     --output_dir $OUTPUT_DIR \
     --num_eval_tokens 6000 \
