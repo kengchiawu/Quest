@@ -4,7 +4,7 @@ import os
 os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
 #os.environ['HF_HOME'] = '/root/autodl-tmp/cache/'
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from datasets import load_dataset
+from datasets import load_dataset, load_from_disk
 from torch.nn import CrossEntropyLoss
 
 import argparse
@@ -55,7 +55,8 @@ def load(model_name_or_path):
 
 args = parser.parse_args()
 print("loading dataset")
-data = load_dataset("emozilla/pg19-test", split="test",cache_dir='/homeB/youkangqi/.cache/huggingface/datasets/emozilla___pg19-test')
+data = load_from_disk('~/.cache/huggingface/datasets/pg19')
+#load_dataset("emozilla/pg19-test", split="test",)
 print("loading model & tokenizer")
 model, tokenizer = load(args.model_name_or_path)
 
