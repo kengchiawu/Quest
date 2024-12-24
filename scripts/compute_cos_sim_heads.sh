@@ -1,8 +1,8 @@
 cd evaluation/pg19
 
-MODELPATH=meta-llama/Llama-3.1-8B-Instruct
+MODELPATH=meta-llama/Llama-3.2-1B-Instruct
 #lmsys/longchat-7b-v1.5-32k
-OUTPUT_DIR=results/ppl_eval/Llama-3.1-8B-Instruct/amax
+OUTPUT_DIR=results/ppl_eval/Llama-3.2-1B-Instruct/amax
 mkdir -p $OUTPUT_DIR
 
 #device=0
